@@ -1,0 +1,28 @@
+version: "3"
+services:
+  mysql:
+    build:
+      context: ./database
+      dockerfile: database.Dockerfile
+    container_name: mysql
+    ports:
+      - 3306:3306
+  backend:
+    build:
+      context: ./backend
+      dockerfile: backend.Dockerfile
+    container_name: backend
+    environment:
+      - UrgentNewsConnection=server=mysql;port=3306;userid=user;password=password;database=UrgentNews
+    ports:
+      - 5000:5000
+    depends_on:
+      - mysql
+  client:
+    build:
+      context: ./client
+      dockerfile: client.Dockerfile
+    ports:
+      - 8080:80
+    depends_on:
+      - backend
